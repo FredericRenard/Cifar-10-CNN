@@ -2,6 +2,7 @@ import torch
 from torch import nn
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
+from tqdm import tqdm
 
 class VGG(nn.Module):
     def __init__(self, in_channels, num_classes=10, n_blocks=3):
@@ -89,7 +90,7 @@ class Trainer:
         val_loss_list = []
         val_acc_list = []
         
-        for epoch in range(epochs):
+        for epoch in tqdm(range(epochs)):
             train_loss = 0.0
             train_acc = 0.0
             self.model.train()
