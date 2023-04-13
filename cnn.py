@@ -2,6 +2,7 @@ import torch
 from torch import nn
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
+
 class VGG(nn.Module):
     def __init__(self, in_channels, num_classes=10, n_blocks=3):
 
@@ -82,6 +83,12 @@ class Trainer:
         self.writer = SummaryWriter(log_dir=f"logs/" + log_dir + f"{datetime.now().strftime('%Y%m%d-%H%M%S')}")
 
     def train(self, epochs):
+        
+        train_loss_list = []
+        train_acc_list = []
+        val_loss_list = []
+        val_acc_list = []
+        
         for epoch in range(epochs):
             train_loss = 0.0
             train_acc = 0.0
@@ -101,7 +108,10 @@ class Trainer:
 
             train_loss /= len(self.train_dataloader)
             train_acc /= len(self.train_dataloader)
-
+            
+            train_loss_list.append(train_loss)
+            train_acc_list.append(train_acc)
+            
             self.writer.add_scalar("Loss/train", train_loss, epoch)
             self.writer.add_scalar("Accuracy/train", train_acc, epoch)
 
@@ -121,7 +131,13 @@ class Trainer:
 
             val_loss /= len(self.val_dataloader)
             val_acc /= len(self.val_dataloader.dataset)
+            
+            val_loss_list.append(val_loss)
+            val_acc_list.append(val_acc)
+            
             self.writer.add_scalar("Loss/val", val_loss, epoch)
             self.writer.add_scalar("Accuracy/val", val_acc, epoch)
 
             print(f"Epoch {epoch+1}/{epochs}: Train Loss = {train_loss:.4f}, Train Accuracy = {train_acc:.4f}, Val Loss = {val_loss:.4f}, Val Accuracy = {val_acc:.4f}")
+        
+        return train_loss_list, train_acc_list, val_loss_list, val_acc_list
