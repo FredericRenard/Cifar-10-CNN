@@ -64,7 +64,7 @@ class VGG(nn.Module):
             nn.Linear(in_features=128 * 4 * 4, out_features=128),
             nn.ReLU(),
             nn.Linear(in_features=128, out_features=self.num_classes),
-            nn.Softmax()
+            nn.Softmax(dim=0)
         )
 
     def forward(self, x):
@@ -111,10 +111,10 @@ class Trainer:
                 self.optimizer.step()
                 train_loss += loss.item()
                 _, predicted = torch.max(outputs.data, 1)
-                train_acc += (predicted == labels).mean().item()
+                train_acc += (predicted == labels).sum().item() 
 
             train_loss /= len(self.train_dataloader)
-            train_acc /= len(self.train_dataloader)
+            train_acc /= len(self.train_dataloader.dataset)
             
             train_loss_list.append(train_loss)
             train_acc_list.append(train_acc)
