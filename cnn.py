@@ -20,12 +20,14 @@ class VGG(nn.Module):
             nn.Conv2d(in_channels=self.in_channels,
                       out_channels=32,
                       kernel_size=3,
-                      stride=1),
+                      stride=1,
+                     padding="same"),
             nn.ReLU(),  
             nn.Conv2d(in_channels=32,
                       out_channels=32,
                       kernel_size=3,
-                      stride=1),
+                      stride=1,
+                     padding="same"),
             nn.ReLU(), 
             nn.MaxPool2d(kernel_size=2),  
 
@@ -33,23 +35,27 @@ class VGG(nn.Module):
             nn.Conv2d(in_channels=32,
                       out_channels=64,
                       kernel_size=3,
-                      stride=1),
+                      stride=1,
+                     padding="same"),
             nn.ReLU(),
             nn.Conv2d(in_channels=64,
                       out_channels=64,
                       kernel_size=3,
-                      stride=1),
+                      stride=1,
+                     padding="same"),
             nn.ReLU(), 
             nn.MaxPool2d(kernel_size=2),
 
             # Third VGG block
             nn.Conv2d(in_channels=64,
                       out_channels=128,
-                      kernel_size=3),
+                      kernel_size=3,
+                     padding="same"),
             nn.ReLU(),
             nn.Conv2d(in_channels=128,
                       out_channels=128,
-                      kernel_size=3),
+                      kernel_size=3,
+                     padding="same"),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
         )
@@ -105,7 +111,7 @@ class Trainer:
                 self.optimizer.step()
                 train_loss += loss.item()
                 _, predicted = torch.max(outputs.data, 1)
-                train_acc += (predicted == labels).sum().item()
+                train_acc += (predicted == labels).mean().item()
 
             train_loss /= len(self.train_dataloader)
             train_acc /= len(self.train_dataloader)
