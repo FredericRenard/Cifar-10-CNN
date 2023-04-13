@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Custom
+
+size.txt
+cifar-10-cnn/
+data/
+__init__.py
