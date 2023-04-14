@@ -5,7 +5,7 @@ from datetime import datetime
 from tqdm import tqdm
 
 class VGG(nn.Module):
-    def __init__(self, in_channels, num_classes=10, n_blocks=3):
+    def __init__(self, in_channels, num_classes=10, n_blocks=3, dropout=False, batchnorm=False):
 
         super(VGG, self).__init__()
 
@@ -13,8 +13,18 @@ class VGG(nn.Module):
         self.num_classes = num_classes
 
         # convolutional layers
+        if dropout and not batchnorm:
+            pass
+        
+        if batchnorm and not dropout:
+            pass
+        
+        if batchnorm and dropout:
+            pass
+        
+        else:
 
-        self.conv_layers = nn.Sequential(
+            self.conv_layers = nn.Sequential(
 
             # First VGG block
             nn.Conv2d(in_channels=self.in_channels,
@@ -59,8 +69,9 @@ class VGG(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
         )
+                
         # fully connected linear layers
-        self.linear_layers = nn.Sequential(
+            self.linear_layers = nn.Sequential(
             nn.Linear(in_features=128 * 4 * 4, out_features=128),
             nn.ReLU(),
             nn.Linear(in_features=128, out_features=self.num_classes),
@@ -107,6 +118,7 @@ class Trainer:
                 self.optimizer.zero_grad()
                 outputs = self.model(inputs)
                 loss = self.criterion(outputs, labels)
+                nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=5)
                 loss.backward()
                 self.optimizer.step()
                 train_loss += loss.item()
