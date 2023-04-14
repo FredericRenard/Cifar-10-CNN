@@ -64,7 +64,7 @@ class VGG(nn.Module):
             nn.Linear(in_features=128 * 4 * 4, out_features=128),
             nn.ReLU(),
             nn.Linear(in_features=128, out_features=self.num_classes),
-            nn.Softmax(dim=0)
+            nn.Softmax()
         )
 
     def forward(self, x):
