@@ -166,7 +166,7 @@ class Trainer:
         self.writer = SummaryWriter(log_dir=f"logs/" + log_dir + f"{datetime.now().strftime('%Y%m%d-%H%M%S')}")
         self.early_stop_patience = early_stop_patience
         self.writer = SummaryWriter(log_dir=f"logs/{datetime.now().strftime('%Y%m%d-%H%M%S')}")
-        self.best_val_acc = float('inf')
+        self.best_val_acc = 0.
         self.epochs_without_improvement = 0
 
     def train(self, epochs):
@@ -232,7 +232,7 @@ class Trainer:
                 print("Solved")
                 break
             
-            if val_acc < self.best_val_acc:
+            if val_acc > self.best_val_acc:
                 self.best_val_acc = val_acc
                 self.epochs_without_improvement = 0
             else:
