@@ -86,6 +86,7 @@ class VGG(nn.Module):
             pass
         
         else:
+            print("VGG model with nothing")
 
             self.conv_layers = nn.Sequential(
 
@@ -154,7 +155,7 @@ class VGG(nn.Module):
         self.linear_layers.bias.data.fill_(0.01)
 
 class Trainer:
-    def __init__(self, model, train_dataloader, val_dataloader, criterion, optimizer, device, log_dir, obj_performance, early_stop_patience=5):
+    def __init__(self, model, train_dataloader, val_dataloader, criterion, optimizer, device, log_dir, obj_performance, early_stop_patience=10):
         self.model = model
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
@@ -165,7 +166,7 @@ class Trainer:
         self.writer = SummaryWriter(log_dir=f"logs/" + log_dir + f"{datetime.now().strftime('%Y%m%d-%H%M%S')}")
         self.early_stop_patience = early_stop_patience
         self.writer = SummaryWriter(log_dir=f"logs/{datetime.now().strftime('%Y%m%d-%H%M%S')}")
-        self.best_val_loss = float('inf')
+        self.best_val_acc = float('inf')
         self.epochs_without_improvement = 0
 
     def train(self, epochs):
@@ -231,13 +232,13 @@ class Trainer:
                 print("Solved")
                 break
             
-            if val_loss < self.best_val_loss:
-                self.best_val_loss = val_loss
+            if val_acc < self.best_val_acc:
+                self.best_val_acc = val_acc
                 self.epochs_without_improvement = 0
             else:
                 self.epochs_without_improvement += 1
                 if self.epochs_without_improvement == self.early_stop_patience:
-                    print(f"No improvement in validation loss for {self.early_stop_patience} epochs. Early stopping.")
+                    print(f"No improvement in validation accuracy for {self.early_stop_patience} epochs. Early stopping.")
                     break
                     
         return train_loss_list, train_acc_list, val_loss_list, val_acc_list
