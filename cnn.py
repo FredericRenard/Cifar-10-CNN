@@ -5,13 +5,14 @@ from datetime import datetime
 from tqdm import tqdm
 
 class VGG(nn.Module):
-    def __init__(self, in_channels, num_classes=10, n_blocks=3, dropout=False, batchnorm=False):
+    def __init__(self, in_channels, num_classes=10, dropout=False, batchnorm=False, p_dropout=0.2):
 
         super(VGG, self).__init__()
 
         self.in_channels = in_channels
         self.num_classes = num_classes
-
+        self.p_dropout = p_dropout
+        self.dropout = dropout
         # convolutional layers
         if dropout and not batchnorm:
             print("VGG model with dropout")
@@ -47,7 +48,7 @@ class VGG(nn.Module):
                      padding="same"),
             nn.ReLU(), 
             nn.MaxPool2d(kernel_size=2),
-            nn.Dropout(0.2),
+            nn.Dropout(0.3),
 
             # Third VGG block
             nn.Conv2d(in_channels=64,
@@ -61,7 +62,7 @@ class VGG(nn.Module):
                      padding="same"),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
-            nn.Dropout(0.2),
+            nn.Dropout(0.4),
 
         )
                 
@@ -69,7 +70,7 @@ class VGG(nn.Module):
             self.linear_layers = nn.Sequential(
             nn.Linear(in_features=128 * 4 * 4, out_features=128),
             nn.ReLU(),
-            nn.Dropout(0.2),
+            nn.Dropout(0.5),
             nn.Linear(in_features=128, out_features=self.num_classes),
             nn.Softmax()
         )        
